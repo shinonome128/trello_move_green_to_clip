@@ -11,6 +11,9 @@ trello で緑タグが付いているものだけをクリップボードにい�
 このドキュメントのコード管理  
 https://github.com/shinonome128/trello_move_green_to_clip  
   
+Trello クライアントのローカル管理ディレクトリ  
+C:\Users\shino\doc\trello  
+  
 ## やること  
   
 レポジトリの作成  
