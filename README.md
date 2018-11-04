@@ -218,9 +218,158 @@ Traceback (most recent call last):
     import ConfigParser  
 ModuleNotFoundError: No module named 'ConfigParser'  
 ```  
-pip コマンドでモジュール入れる  
+モジュールないよと怒られる  
   
-ここから再開  
+ConfigParser のインスト  
+```  
+cd C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts  
+pip3.6.exe install ConfigParser  
+```  
+```  
+C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts>pip3.6.exe install ConfigParser  
+Requirement already satisfied: ConfigParser in c:\users\shino\appdata\local\programs\python\python36\lib\site-packages (3.5.0)  
+You are using pip version 10.0.1, however version 18.1 is available.  
+You should consider upgrading via the 'python -m pip install --upgrade pip' command.  
+```  
+pip が古いと怒られる  
+  
+pip のアップグレード  
+```  
+cd C:\Users\shino\AppData\Local\Programs\Python\Python36  
+python -m pip install --upgrade pip  
+```  
+  
+ConfigParser のインスト  
+```  
+cd C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts  
+pip3.6.exe install ConfigParser  
+```  
+```  
+C:\Users\shino\AppData\Local\Programs\Python\Python36\Scripts>pip3.6.exe install ConfigParser  
+Requirement already satisfied: ConfigParser in c:\users\shino\appdata\local\programs\python\python36\lib\site-packages (3.5.0)  
+```  
+既にあると怒られる  
+  
+修正後のテスト  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+```  
+```  
+Traceback (most recent call last):  
+  File "get_board.py", line 8, in <module>  
+    import ConfigParser  
+ModuleNotFoundError: No module named 'ConfigParser'  
+```  
+モジュールが無いと怒られる、状態かわらず  
+  
+調査結果  
+In Python 3, ConfigParser has been renamed to configparser for PEP 8 compliance. It looks like the package you are installing does not support Python 3.  
+モジュール名を変更  
+  
+修正後のテスト  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+```  
+```  
+Traceback (most recent call last):  
+  File "get_board.py", line 56, in <module>  
+    main()  
+  File "get_board.py", line 24, in main  
+    config = ConfigParser.SafeConfigParser()  
+NameError: name 'ConfigParser' is not defined  
+```  
+関数名も変更する必要がある  
+  
+関数名変更  
+```  
+%s/ConfigParser/configparser/gc  
+```  
+  
+修正後のテスト  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+```  
+```  
+Traceback (most recent call last):  
+  File "get_board.py", line 56, in <module>  
+    main()  
+  File "get_board.py", line 24, in main  
+    config = configparser.Safeconfigparser()  
+AttributeError: module 'configparser' has no attribute 'Safeconfigparser'  
+```  
+モジュール無しと怒られる  
+  
+Python3 configparser モジュールの使い方が違う  
+```  
+import configparser  
+  
+cfg = configparser.ConfigParser()  
+cfg.read('example.cfg')  
+  
+# Set the optional *raw* argument of get() to True if you wish to disable  
+# interpolation in a single get operation.  
+print(cfg.get('Section1', 'foo', raw=False))  # -> "Python is fun!"  
+print(cfg.get('Section1', 'foo', raw=True))   # -> "%(bar)s is %(baz)s!"  
+```  
+  
+修正後のテスト  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+```  
+```  
+Traceback (most recent call last):  
+  File "get_board.py", line 48, in <module>  
+    main()  
+  File "get_board.py", line 39, in main  
+    boards = client.list_boards()  
+  File "C:\Users\shino\AppData\Local\Programs\Python\Python36\lib\site-packages\trello\trelloclient.py", line 87, in list_boards  
+    json_obj = self.fetch_json('/members/me/boards/?filter=%s' % board_filter)  
+  File "C:\Users\shino\AppData\Local\Programs\Python\Python36\lib\site-packages\trello\trelloclient.py", line 223, in fetch_json  
+    raise Unauthorized("%s at %s" % (response.text, url), response)  
+trello.exceptions.Unauthorized: invalid key at https://api.trello.com/1/members/me/boards/?filter=all (HTTP status: 401)  
+```  
+クレデンシャルがまちがっとる  
+  
+格納した変数値をデバッグして解析する  
+格納処理後に書きを挿入  
+```  
+import pdb; pdb.set_trace()  
+```  
+デバッグ実施  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+API_Key  
+API_SECRET  
+OAUTH_TOKEN  
+OAUTH_TOKEN_SECRET  
+```  
+```  
+(Pdb) API_Key  
+"'15798efd0f84d7a491bbc7c6303bcccb'"  
+(Pdb) API_SECRET  
+"'4017860a380c9f7a663f799eef583c151da66d2f47f6772044744eff855b1d03'"  
+(Pdb) OAUTH_TOKEN  
+"'24e41ac3532525d0bbefcc546eb0201f6e54983512586f6b0f7b0ce468b97ecd'"  
+(Pdb) OAUTH_TOKEN_SECRET  
+"'71dd7323e3ee99ae8e91ee6513b4d824'"  
+```  
+あー、シングルコーテーションが入っとる、、、削除必要  
+  
+コンフィグファイルの値を修正  
+  
+修正後のテスト  
+```  
+cd C:\Users\shino\doc\trello  
+py get_board.py  
+```  
+うごいたぁー！！  
+  
+デバッグと不要コメントを削除  
   
 ## 非管理対象に加えてから Git 管理にする  
   
