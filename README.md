@@ -17,6 +17,9 @@ C:\Users\shino\doc\trello
 ConfigParser の使い方、サンプルコード  
 http://zacodesign.net/blog/?p=3336  
   
+xcopy 使い方
+http://www.palm84.com/entry/20150525/1432550334
+
 ## やること  
   
 レポジトリの作成  
@@ -439,6 +442,12 @@ cd C:\Users\shino\doc\trello_move_green_to_clip
 git add *
 git commit -m "Add first commit"  
 git push
+```
+
+動作確認
+```
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_board.py  
 ```
 
 ## 緑タグのタスクを取得 
