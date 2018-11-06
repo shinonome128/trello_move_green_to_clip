@@ -20,6 +20,9 @@ http://zacodesign.net/blog/?p=3336
 xcopy 使い方  
 http://www.palm84.com/entry/20150525/1432550334  
   
+py_trello 本家  
+https://github.com/sarumont/py-trello  
+  
 ## やること  
   
 レポジトリの作成  
@@ -450,9 +453,79 @@ cd C:\Users\shino\doc\trello_move_green_to_clip
 py get_board.py  
 ```  
   
-## 緑タグのタスクを取得  
+## カード一覧を取得
   
-## 変数に格納  
+取説からカード取得方法を調査  
+```  
+all_boards = client.list_boards()  
+last_board = all_boards[-1]  
+last_board.list_lists()  
+my_list = last_board.get_list(list_id)  
+  
+for card in my_list.list_cards():  
+    print(card.name)  
+```  
+  
+get_board.py  をコピー  
+get_card.py を作成  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+copy get_board.py get_card.py  
+```  
+  
+実装  
+ボード取得部分を書き換え  
+認証部分はそのまま  
+  
+テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+```  
+  File "get_card.py", line 49, in main  
+    my_list = last_board.get_list(list_id)  
+NameError: name 'list_id' is not defined  
+```  
+list_id が定義されていない、サンプルコード見てみる  
+  
+list_id が定義されていない、サンプルコード見てみる  
+サンプル側でも定義されていない  
+  
+list_id を削除  
+  
+リトライ  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+```  
+  File "get_card.py", line 50, in main  
+    my_list = last_board.get_list()  
+TypeError: get_list() missing 1 required positional argument: 'list_id'  
+  
+```  
+最低限、1つはリスト指定する必要がある  
+  
+デバッグ、変数の中身を追って処理を理解  
+リトライ  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+p all_boards  
+p last_board  
+last_board.list_lists()  
+```  
+コメントに追記  
+  
+ここから再開  
+  
+lit_id の指定の仕方を調査  
+昔ボード指定したときの方法を見てみる  
+  
+## 緑カードのフィルタ方法を調査  
+  
+## ボード名、リスト名、タグ名を外部設定ファイル化  
   
 ## 取得した情報を整形  
   
