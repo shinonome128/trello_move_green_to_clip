@@ -391,9 +391,51 @@ copy py-trello C:\Users\shino\doc\trello_move_green_to_clip\
 copy util.py C:\Users\shino\doc\trello_move_green_to_clip\
 copy conf.txt C:\Users\shino\doc\trello_move_green_to_clip\
 ```
+失敗、切り戻し、ディレクトをコピーしたい
+```
+del CHANGELOG
+del CHANGELOG.md
+del get_board.py
+del LICENSE
+del MANIFEST.in
+del README.rst
+del requirements.txt
+del setup.py
+del tox.ini
+del AUTHORS.md
+```
+
+ディレクトリコピーの方法
+最後のバックスラッシュは不要？
+```
+cd C:\Users\shino\doc\trello  
+mkdir hoge
+copy hoge C:\Users\shino\doc\trello_move_green_to_clip
+```
+```
+hoge\*
+指定されたファイルが見つかりません。
+        0 個のファイルをコピーしました。
+```
+ディレクトリは copy コマンドダメ
+
+D:\hoge ディレクトリを Z:\Backup 内にコピーする
+```
+xcopy hoge Z:\Backup\hoge /s/e/i
+```
+
+リトライ
+```
+cd C:\Users\shino\doc\trello  
+copy get_board.py C:\Users\shino\doc\trello_move_green_to_clip
+copy util.py C:\Users\shino\doc\trello_move_green_to_clip
+copy conf.txt C:\Users\shino\doc\trello_move_green_to_clip
+xcopy py-trello C:\Users\shino\doc\trello_move_green_to_clip\py-trello /s/e/i
+```
 
 管理対象ファイルをコミット、プッシュ
 ```
+cd C:\Users\shino\doc\trello_move_green_to_clip  
 git add *
 git commit -m "Add first commit"  
 git push
