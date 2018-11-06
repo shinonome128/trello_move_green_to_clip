@@ -39,15 +39,21 @@ def main():
         #アカウントが作成したboard一覧を取得
         boards = client.list_boards()
         
-        # import pdb; pdb.set_trace()
         pprint(boards)
         """
 
+        # 全ボードをリストし変数に格納
         all_boards = client.list_boards()
+
+        # 最後のボード名を変数に格納
         last_board = all_boards[-1]
+
+        # 最後のボードのリストを取得
         last_board.list_lists()
-        # my_list = last_board.get_list(list_id)
-        my_list = last_board.get_list()
+        import pdb; pdb.set_trace()
+
+        # list_id の指定方法を調査
+        my_list = last_board.get_list(list_id)
         
         for card in my_list.list_cards():
             print(card.name)
