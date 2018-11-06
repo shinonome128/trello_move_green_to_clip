@@ -372,8 +372,34 @@ py get_board.py
 デバッグと不要コメントを削除  
   
 ## 非管理対象に加えてから Git 管理にする  
-  
-## 緑タグのタスクを取得  
+
+非管理対象を .gitignore に追加
+```
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+echo conf.txt>> .gitignore  
+git add *
+git commit -m "Add conf.txt"  
+git push
+```
+
+管理対象をコピー
+クレデンシャル情報が削除されていることを確認
+```
+cd C:\Users\shino\doc\trello  
+copy get_board.py C:\Users\shino\doc\trello_move_green_to_clip\
+copy py-trello C:\Users\shino\doc\trello_move_green_to_clip\
+copy util.py C:\Users\shino\doc\trello_move_green_to_clip\
+copy conf.txt C:\Users\shino\doc\trello_move_green_to_clip\
+```
+
+管理対象ファイルをコミット、プッシュ
+```
+git add *
+git commit -m "Add first commit"  
+git push
+```
+
+## 緑タグのタスクを取得 
   
 ## 変数に格納  
   
