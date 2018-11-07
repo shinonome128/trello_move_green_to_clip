@@ -23,6 +23,9 @@ http://www.palm84.com/entry/20150525/1432550334
 py_trello 本家  
 https://github.com/sarumont/py-trello  
   
+py_trello 使い方  
+https://qiita.com/nozomale/items/c2c30fc2a8a89b37e921  
+  
 ## やること  
   
 レポジトリの作成  
@@ -453,7 +456,7 @@ cd C:\Users\shino\doc\trello_move_green_to_clip
 py get_board.py  
 ```  
   
-## カード一覧を取得
+## カード一覧を取得  
   
 取説からカード取得方法を調査  
 ```  
@@ -516,14 +519,95 @@ p all_boards
 p last_board  
 last_board.list_lists()  
 ```  
-コメントに追記  
+```  
+(Pdb) p all_boards  
+[<Board ●NRICloud [ネット自動化]>, <Board すべての結果は自分の決定の結果にある>, <Board みんなのトレロ（Trello日本語コ ミュニティ)>, <Board 黒田家>]  
   
-ここから再開  
+(Pdb) p last_board  
+<Board 黒田家>  
+  
+(Pdb) last_board.list_lists()  
+[<List やること>, <List 買うもの>]  
+  
+(Pdb)         my_list = last_board.get_list(list_id)  
+NameError: name 'list_id' is not defined  
+(Pdb)  
+```  
   
 lit_id の指定の仕方を調査  
 昔ボード指定したときの方法を見てみる  
+```  
+	board = client.get_board("SMBCユニット")  
+```  
+日本語部分を引用符で囲って表示  
   
-## 緑カードのフィルタ方法を調査  
+  
+同じ方法で実施  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+my_list = last_board.get_list("買うもの")  
+```  
+```  
+(Pdb) my_list = last_board.get_list("買うもの")  
+trello.exceptions.ResourceUnavailable: invalid id at https://api.trello.com/1/lists/買うもの (HTTP status: 400)  
+```  
+だめ、リクエスト形式が正しくない  
+  
+ソースコード全体で list_id を検索  
+わからん  
+  
+list_id を正しく変数化してみる  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+list_id = last_board.list_lists()  
+my_list = last_board.get_list(list_id)  
+```  
+```  
+(Pdb) list_id = last_board.list_lists()  
+(Pdb) my_list = last_board.get_list(list_id)  
+TypeError: must be str, not list  
+```  
+リスト形式ではない  
+  
+ソースコードから get_list() を調べてみる  
+```  
+ list_json = self.fetch_json('/lists/' + list_id)  
+```  
+わからん  
+  
+有効なボードで、文字列で指定してみる  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+tmp_board = all_boards[1]  
+tmp_board.list_lists()  
+tmp_board.get_list("Plan")  
+```  
+だめ  
+  
+py-trello の使い方を検索  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+tmp_board = all_boards[1]  
+tmp_board.list_lists()  
+tmp_board.all_cards()  
+```  
+成功、むずかしいなぁ、まだ、 GitHub 上のソースコードが読めない  
+日本語解説サイトのコーディングすると早い  
+  
+実装  
+  
+テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+完成  
+  
+## オープンしている緑カードのフィルタ方法を調査  
   
 ## ボード名、リスト名、タグ名を外部設定ファイル化  
   
