@@ -607,18 +607,100 @@ py get_card.py
 ```  
 完成  
   
-## オープンしている緑カードのフィルタ方法を調査  
+## オープンしている緑カードのフィルタ  
   
-## ボード名、リスト名、タグ名を外部設定ファイル化  
+py-trello 使い方サイトから調査  
+```  
+・ラベル一覧の取得  
   
-## 取得した情報を整形  
+>>> test_board.get_labels()  
+[<Label test>, <Label test4>, <Label test3>, <Label test2>, <Label test5>, <Label test6>]  
   
-## 整形した情報をクリップボードにコピー  
+・ラベルのidの取得  
   
-## wox から呼び出せるようにするためにバッチファイルの作成  
+>>> test_label = test_board.get_labels()[0] # <Label test>を変数化  
+>>> test_label.id  
+'5aee9e93841642c2a88e7ca1'  
+```  
+ラベル情報の出力はあるけど、カードフィルタ方法は記載なし  
   
-## モバイル上でも動作するように GCP のラムダのような機能を追加  
+ソースコードから調査  
+all_cards() 関数でどのようなオプションが取れるか  
+```  
+	def all_cards(self, custom_field_items='true'):  
+		"""Returns all cards on this board  
+		:rtype: list of Card  
+		"""  
+		filters = {  
+			'filter': 'all',  
+			'fields': 'all',  
+			'customFieldItems': custom_field_items  
+		}  
+		return self.get_cards(filters)  
+```  
+引数 fileters を get_cards() 関数に渡している  
+引数 filters の filter, fields フィールド値 all になっているので、この部分でラベルと値を指摘できればよいかも  
+緑ラベルのカード名を取得するときは all_cards() ではなく、 get_cards() を使う  
   
-## 変更管理ができるように CICD パイプライン処理を追加  
+get_card() 関数で filters 引数を指定するとき、ラベルと値を指定できるかどうか  
+```  
+	def get_cards(self, filters=None, card_filter=""):  
+		"""  
+		:filters: dict containing query parameters. Eg. {'fields': 'all'}  
+		:card_filter: filters on card status ('open', 'closed', 'all')  
+		More info on card queries:  
+		https://trello.com/docs/api/board/index.html#get-1-boards-board-id-cards  
+		:rtype: list of Card  
+		"""  
+		json_obj = self.client.fetch_json(  
+				'/boards/' + self.id + '/cards/' + card_filter,  
+				query_params=filters  
+		)  
+  
+		return list([Card.from_json(self, json) for json in json_obj])  
+```  
+filters 引数 は辞書形式でクエリパラメータを記載  
+Trello API ガイド参照  
+  
+Trello API ガイド参照  
+/boards/{id}/cards部分  
+cURL  
+```  
+https://api.trello.com/1/boards/d2EnEWSY/cards/?limit=2&fields=name&members=true&member_fields=fullName&key=[yourKey]&token=[yourToken]  
+```  
+出力  
+```  
+  {  
+    "id": "5941465a11d2c760d95b95ad",  
+    "name": "Checklists",  
+    "members": []  
+  },  
+  {  
+    "id": "5939a829eba57d109331a289",  
+    "name": "Design New System",  
+    "members": [  
+      {  
+        "id": "5589c3ea49b40cedc28cf70e",  
+        "fullName": "Bentley Cook"  
+      }  
+    ]  
+  }  
+]  
+```  
+  
+  
+ここから再開  
+  
+  
+実装  
+  
+テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+  
+コメント修正、デバッグ削除  
+  
   
 以上  
