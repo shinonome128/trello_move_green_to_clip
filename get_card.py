@@ -39,12 +39,9 @@ def main():
         # インデクシングしてボード名を変数に格納
         board = all_boards[1]
 
-        # ボードの全カードを取得
-        board.all_cards()  
-        # import pdb; pdb.set_trace()
-        
         # カード名を出力
         for card in board.all_cards():
+            # import pdb; pdb.set_trace()
             print(card.name)
 
 """
