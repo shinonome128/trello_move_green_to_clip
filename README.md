@@ -26,6 +26,15 @@ https://github.com/sarumont/py-trello
 py_trello 使い方  
 https://qiita.com/nozomale/items/c2c30fc2a8a89b37e921  
   
+Trello API ガイド、ボード配下のカード取得する cURL と 出力  
+https://developers.trello.com/reference/#boardsboardidtest  
+  
+py-trello 使い方、コードとテストコードがドキュメントらしい  
+http://thinkami.hatenablog.com/entry/2016/03/01/003050  
+  
+py-trello のテストコード  
+https://github.com/shinonome128/trello_move_green_to_clip/tree/master/py-trello/test  
+  
 ## やること  
   
 レポジトリの作成  
@@ -668,6 +677,11 @@ cURL
 ```  
 https://api.trello.com/1/boards/d2EnEWSY/cards/?limit=2&fields=name&members=true&member_fields=fullName&key=[yourKey]&token=[yourToken]  
 ```  
+fields=name  
+members=true  
+member_fields=fullName  
+でクエリ  
+  
 出力  
 ```  
   {  
@@ -688,19 +702,72 @@ https://api.trello.com/1/boards/d2EnEWSY/cards/?limit=2&fields=name&members=true
 ]  
 ```  
   
+結論  
+get_card() の引数 filters は出力するフィールド名を指定するものなので、緑ラベルのみフィルタはできない  
   
-ここから再開  
+やりたいこと  
+card.name で指定したように dict 処理部分で緑ラベルのモノだけを表示  
   
+方針1  
+dict 形式の変数から情報を取得するとき AND 条件ができるかどうか  
+.name 指定ないときの出力を確認  
   
-実装  
-  
-テスト  
+.name 指定ないときの出力を確認  
 ```  
 cd C:\Users\shino\doc\trello_move_green_to_clip  
 py get_card.py  
 ```  
+```  
+<Card 16:30に痛み止飲む>  
+<Card 旧場のビッグローブを3/11に解約手続き>  
+<Card 洗濯物>  
+```  
+だめだね。  
   
-コメント修正、デバッグ削除  
+ソースコードみると、 labels メソッドがのでやってみる  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+```  
+[<Label 今日やる>]  
+[]  
+[]  
+[<Label 今日やる>]  
+```  
+お、取れた  
+  
+名前とラベルのメソッドが同時に利用できるかやってみる  
+出来ないです  
+  
+テストコードから使い方を調べてみる  
+```  
+    def test51_fetch_cards(self):  
+        """  
+        Tests fetching all attributes for all cards  
+        """  
+        boards = self._trello.list_boards()  
+        for b in boards:  
+            for l in b.all_lists():  
+                for c in l.list_cards():  
+                    c.fetch()  
+  
+                    self.assertIsInstance(c.date_last_activity, datetime,  
+                                          msg='date not provided')  
+                    self.assertTrue(len(c.board_id) > 0,  
+                                    msg='board id not provided')  
+                break  
+            break  
+        pass  
+```  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+出力が同じ、、、、意味なし  
+テストコード全部読んだけど、効果的な使い方のサンプルなし  
+  
+ちょっと、get_card かややり直す  
   
   
 以上  
