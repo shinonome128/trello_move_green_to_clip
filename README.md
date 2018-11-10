@@ -35,6 +35,9 @@ http://thinkami.hatenablog.com/entry/2016/03/01/003050
 py-trello のテストコード  
 https://github.com/shinonome128/trello_move_green_to_clip/tree/master/py-trello/test  
   
+py-trello の条件式の書き方  
+https://qiita.com/nozomale/items/c2c30fc2a8a89b37e921  
+  
 ## やること  
   
 レポジトリの作成  
@@ -767,7 +770,63 @@ py get_card.py
 出力が同じ、、、、意味なし  
 テストコード全部読んだけど、効果的な使い方のサンプルなし  
   
-ちょっと、get_card かややり直す  
+get_cards() の使い方を GitHub から使い方と出力を確認  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+board.get_cards()  
+```  
+```  
+[<Card 面談セットアップ レバテック>, <Card How to live before you die 12>, (省略), <Card 歯医者予約>]  
+```  
+カードタイトルを返すので使えない  
   
+list_cards() から fetch() の出力を確認  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+card = board.get_cards()[0]  
+card.fetch()  
+```  
+出力がない、読み込んだ後、何か手続きが必要？？  
+  
+GitHub 上から fetch() の使い方を調査  
+よくわからない。。。  
+  
+py-trello 使い方サイトから fetch() の使い方を調査  
+よくわからん  
+  
+カード読み込んで、メソッドでラベルを取得  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+card = board.get_cards()[0]  
+card.labels  
+```  
+```  
+[<Label 今日やる>]  
+```  
+あー、やっとできた、メソッドで指定  
+  
+この後実装すること  
+ボードから全リストを取得  
+リストからカードを取得  
+カードからラベルを取得  
+ラベルで緑の場合は出力  
+  
+サンプルコード  
+```  
+board_list = client.list_boards()  
+for board in board_list:  
+    if board.name == "Test":  
+        for list in board.list_lists():  
+            if list.name == "完了":  
+                for card in list.list_cards():  
+                    one_week_before = datetime.now(timezone.utc) - timedelta(days=7)  
+                    if card.dateLastActivity < one_week_before:  
+                        card.set_closed(True)  
+```  
+  
+あー、やっと動いた。出力で昔のアーカイブしたカードも出力されるので、条件式を追加する  
   
 以上  
