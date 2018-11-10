@@ -33,16 +33,29 @@ def main():
         # クライアントを作成
         client = TrelloClient(API_Key, API_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
-        # 全ボードをリスト
-        all_boards = client.list_boards()
+        # ボードリスト取得
+        board_list = client.list_boards()
 
-        # インデクシングしてボード名を変数に格納
-        board = all_boards[1]
+        # ボード名を取得してループ処理
+        for board in board_list:
 
-        # カード名を出力
-        for card in board.all_cards():
-            # import pdb; pdb.set_trace()
-            print(card.name)
+            # ボード名が一致するものを処理
+            if board.name == "すべての結果は自分の決定の結果にある":
+
+                # リスト名を取得してループ処理
+                for list in board.list_lists():
+
+                    # カード名を取得してループ処理
+                    for card in list.list_cards():
+
+                        # ラベルがついたものを処理
+                        if len(card.labels) > 0:
+
+                            # ラベル名が一致するものを処理
+                            if card.labels[0].name == "今日やる":
+
+                                # カード名を出力
+                                print(card.name)
 
 """
 お作法、他ファイルから呼び出された場合は、このスクリプトは実行されない
