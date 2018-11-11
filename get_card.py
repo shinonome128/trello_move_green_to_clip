@@ -43,7 +43,7 @@ def main():
 
                 # リスト名を取得してループ処理
                 for list in board.list_lists():
-                import pdb; pdb.set_trace()
+                    import pdb; pdb.set_trace()
 
                     # カード名を取得してループ処理
                     for card in list.list_cards():
