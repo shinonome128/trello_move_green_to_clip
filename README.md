@@ -38,6 +38,15 @@ https://github.com/shinonome128/trello_move_green_to_clip/tree/master/py-trello/
 py-trello の条件式の書き方  
 https://qiita.com/nozomale/items/c2c30fc2a8a89b37e921  
   
+Python 関数の引数の解説、デフォルト値の作り方  
+http://www.isl.ne.jp/pcsp/python/python24.html#third  
+  
+Trello API ガイド、/lists/{id}/cards  
+https://developers.trello.com/reference/#listsidcards  
+  
+Trello API ガイド、/lists/{id}/cards、クエリパラメータ  
+https://developers.trello.com/reference#cards-nested-resource  
+  
 ## やること  
   
 レポジトリの作成  
@@ -826,7 +835,99 @@ for board in board_list:
                     if card.dateLastActivity < one_week_before:  
                         card.set_closed(True)  
 ```  
-  
 あー、やっと動いた。出力で昔のアーカイブしたカードも出力されるので、条件式を追加する  
+  
+## trello_green_clip アーカイブ済みカードの除外  
+  
+list_cards() のソースコードから調査  
+```  
+    def list_cards(self, card_filter="open", actions=None):  
+        """Lists all cards in this list"""  
+        query_params = {}  
+        if card_filter:  
+            query_params['filter'] = card_filter  
+        if actions:  
+            query_params['actions'] = actions  
+        query_params['customFieldItems'] = 'true'  
+        json_obj = self.client.fetch_json('/lists/' + self.id + '/cards',  
+                                          query_params=query_params)  
+return [Card.from_json(self, c) for c in json_obj]  
+```  
+card_filter="open" の引数が使えそう  
+  
+関数での引数に card_filter="open" を使う  
+引数がある場合は card_filter にその値を入れる  
+引数が無い場合は card_filter に open を入れる  
+query_params に filter = xxx として、URL が組み立てられる  
+  
+Trello API ガイドでの filter でとれる値を調査  
+/lists/ 配下、 /cards のAPIガイドより  
+```  
+```  
+設定できるクエリより  
+```  
+ open - Includes cards that are open in lists that have been archived.  
+ visible - Only returns cards in lists that are not closed.  
+```  
+visible を入れれば行けそう  
+  
+デバッグ  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+p list.list_cards('visible')  
+p list.list_cards('open')  
+p list.list_cards('')  
+```  
+visible は使えない、原因はわからないけど、HTTP エラコード 400 を返す  
+API ガイドが古いと思われる  
+そもそも、　open で問題ない  
+原因は、アーカイブ済みのリストが検査されていること  
+  
+list_lists() 関数のソースからアーカイブ済みリストの除外方法を調査  
+```  
+	def list_lists(self, list_filter='all'):  
+		"""Get lists from filter  
+		:rtype: list of List  
+		"""  
+		return self.get_lists(list_filter=list_filter)  
+```  
+デフォルト値で list_filter = 'all' を格納  
+get_lists() に all を渡している  
+  
+get_lists() 関数のソース調査  
+```  
+	def get_lists(self, list_filter):  
+		"""Get lists from filter  
+		:rtype: list of List  
+		"""  
+		# error checking  
+		json_obj = self.client.fetch_json(  
+				'/boards/' + self.id + '/lists',  
+				query_params={'cards': 'none', 'filter': list_filter})  
+		return [List.from_json(board=self, json_obj=obj) for obj in json_obj]  
+```  
+query_parms の filter に all を格納  
+  
+Trello API で/boards/ .... /lists のクエリパラメータを調査  
+```  
+filter  
+One of all, closed, none, open  
+```  
+Open を使えばいいかも  
+  
+デバッグ  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+p board.list_lists()  
+p board.list_lists('all')  
+p board.list_lists('open')  
+```  
+いいね、 open でいける  
+  
+実装  
+  
+テスト  
   
 以上  
