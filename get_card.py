@@ -40,10 +40,10 @@ def main():
 
             # ボード名が一致するものを処理
             if board.name == "すべての結果は自分の決定の結果にある":
+                import pdb; pdb.set_trace()
 
                 # リスト名を取得してループ処理
                 for list in board.list_lists():
-                    import pdb; pdb.set_trace()
 
                     # カード名を取得してループ処理
                     for card in list.list_cards():
