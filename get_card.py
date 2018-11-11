@@ -23,7 +23,6 @@ def main():
             API_SECRET = config.get('API', 'API_SECRET')
             OAUTH_TOKEN = config.get('API', 'OAUTH_TOKEN')
             OAUTH_TOKEN_SECRET = config.get('API', 'OAUTH_TOKEN_SECRET')
-            # import pdb; pdb.set_trace()
 
         # 失敗した時はエラーとだけ伝える
         except:
@@ -44,6 +43,7 @@ def main():
 
                 # リスト名を取得してループ処理
                 for list in board.list_lists():
+                import pdb; pdb.set_trace()
 
                     # カード名を取得してループ処理
                     for card in list.list_cards():
