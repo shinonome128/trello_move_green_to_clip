@@ -4,6 +4,8 @@
 """
 from trello import TrelloClient
 import configparser
+import codecs
+
 """
 主処理
 """
@@ -16,13 +18,15 @@ def main():
         # 気持ち程度のエラー処理
         try:
             # configのファイルを開く
-            config.read(conf_file)
+            config.readfp(codecs.open(conf_file, "r", "utf8"))
          
             # パラメータの読み込み
             API_Key = config.get('API', 'API_Key')
             API_SECRET = config.get('API', 'API_SECRET')
             OAUTH_TOKEN = config.get('API', 'OAUTH_TOKEN')
             OAUTH_TOKEN_SECRET = config.get('API', 'OAUTH_TOKEN_SECRET')
+            BOARD_NAME = config.get('ENV', 'BOARD_NAME')
+            TAG_NAME = config.get('ENV', 'TAG_NAME')
 
         # 失敗した時はエラーとだけ伝える
         except:
@@ -39,7 +43,7 @@ def main():
         for board in board_list:
 
             # ボード名が一致するものを処理
-            if board.name == "すべての結果は自分の決定の結果にある":
+            if board.name == BOARD_NAME:
 
                 # リスト名を取得してループ処理
                 for list in board.list_lists('open'):
@@ -51,7 +55,7 @@ def main():
                         if len(card.labels) > 0:
 
                             # ラベル名が一致するものを処理
-                            if card.labels[0].name == "今日やる":
+                            if card.labels[0].name == TAG_NAME:
 
                                 # カード名を出力
                                 print(card.name)
