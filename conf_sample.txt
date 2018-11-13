@@ -1,0 +1,9 @@
+[API]
+API_Key = hoge
+API_SECRET = hoge
+OAUTH_TOKEN = hoge
+OAUTH_TOKEN_SECRET = hoge
+
+[ENV]
+BOARD_NAME = hoge
+TAG_NAME = hoge
