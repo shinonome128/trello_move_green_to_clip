@@ -47,6 +47,13 @@ https://developers.trello.com/reference/#listsidcards
 Trello API ガイド、/lists/{id}/cards、クエリパラメータ  
 https://developers.trello.com/reference#cards-nested-resource  
   
+Python で出力時に q932 コーデックエラーが出る原因  
+https://qiita.com/butada/items/33db39ced989c2ebf644  
+  
+Python で出力時に q932 コーデックエラーが出る原因、コンフィグパーサでの対応方法  
+https://stackoverflow.com/questions/17813310/configparser-which-encoding-on-windows  
+https://stackoverflow.com/questions/1648517/configparser-with-unicode-items  
+  
 ## やること  
   
 レポジトリの作成  
@@ -929,5 +936,125 @@ p board.list_lists('open')
 実装  
   
 テスト  
+  
+## ボード名、リスト名、タグ名を外部設定ファイル化  
+  
+変数名を決める  
+```  
+ENV  
+BOARD_NAME  
+TAG_NAME  
+```  
+  
+コンフィグファイル作成  
+  
+コード修正  
+  
+テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+```  
+Error occured  
+```  
+コンフィグファイルの読み込みに失敗  
+フォーマットが悪い？  
+  
+デバッグを仕込んで変数の中身を確認  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+p BOARD_NAME  
+p TAG_NAME  
+```  
+デバッグで止まらない、もっと前で失敗している  
+  
+一度コンフィグファイルを閉じて実行  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+p BOARD_NAME  
+p TAG_NAME  
+```  
+  
+ファイルを開く前にデバッグを仕込んで実行  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+config.read(conf_file)  
+```  
+```  
+(Pdb)             config.read(conf_file)  
+UnicodeDecodeError: 'cp932' codec can't decode byte 0x86 in position 313: illegal multibyte sequence  
+```  
+ユニコードエラー、コンフィグファイルに日本語が混じったため事象が発生した  
+UTF-8 へファイルをデコードし直して保存する  
+  
+UTF-8 へファイルをデコードし直して保存  
+Gvim のスクリプトを利用  
+```  
+:set encoding=utf-8  
+:set fileformat=unix  
+```  
+  
+再テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+config.read(conf_file)  
+```  
+```  
+(Pdb)             config.read(conf_file)  
+UnicodeDecodeError: 'cp932' codec can't decode byte 0x86 in position 313: illegal multibyte sequence  
+```  
+効果なし  
+エラーメッセージを調査  
+  
+cp932 でエンコードするときに、解釈出来ないコードを無視する  
+サンプル  
+```  
+>>> s.encode('cp932')  
+Traceback (most recent call last):  
+  File "<stdin>", line 1, in <module>  
+UnicodeEncodeError: 'cp932' codec can't encode character '\xa0' in position 0: illegal multibyte sequence  
+  
+>>> s.encode('cp932', "ignore")  
+b''  
+```  
+ダメだね、コンフィグパーサでは使えない  
+  
+  
+コンフィグパーサでファイルオープン時に UTF で読み取るようにする  
+サンプル  
+```  
+cfg.readfp(codecs.open("myconfig", "r", "utf8"))  
+```  
+  
+再テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+import codecs  
+config.readfp(codecs.open(conf_file, "r", "utf8"))  
+```  
+OK、うまくいった！  
+  
+コード修正後、コメント、デバッグ削除の再テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+  
+## config サンプルを作成  
+  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+copy conf.txt conf_sample.txt  
+```  
+  
+conf_sample.txt の値を置換  
+  
+ステージングとコミット  
   
 以上  
