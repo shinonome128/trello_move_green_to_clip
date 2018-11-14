@@ -54,6 +54,9 @@ Python で出力時に q932 コーデックエラーが出る原因、コンフ�
 https://stackoverflow.com/questions/17813310/configparser-which-encoding-on-windows  
 https://stackoverflow.com/questions/1648517/configparser-with-unicode-items  
   
+配列への追加方法、append の使い方  
+https://note.nkmk.me/python-list-append-extend-insert/  
+  
 ## やること  
   
 レポジトリの作成  
@@ -1056,5 +1059,71 @@ copy conf.txt conf_sample.txt
 conf_sample.txt の値を置換  
   
 ステージングとコミット  
+  
+## 不要ボード削除  
+  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+del get_board.py  
+git add get_board.py  
+git commit -m "Delete get_board.py"  
+git push  
+```  
+  
+## サンプルコンフィグに例を入れる  
+  
+sample_conf.txt に凡例を入れる  
+行けてないのでやめ  
+  
+## 整形した情報をクリップボードにコピー  
+  
+vmlogin のコード部分からサンプル部分を抽出  
+```  
+import pyperclip  
+# 取得した OTP をクリップボードにコピー  
+pyperclip.copy(get_otp(USER_SECRET_FILE, CLIENT_SECRET_FILE, SCOPES, PIN))  
+```  
+  
+デバッグ実装とテスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+```  
+ビッグデータの正体  
+```  
+あー、だめだ、配列に入れたほうがコピーのとき配列に入れる  
+  
+配列に入れる方法を調査  
+ログインスクリプトのライン処理を流用  
+```  
+    # 変数 pin の空の配列を作成  
+    pin = []  
+  
+    # 変数 pin に文字列 PIN から一文字ずつスライシングして配列を作成  
+    for i in range(len(PIN)):  
+        # import pdb; pdb.set_trace()  
+        pin += PIN[i]  
+```  
+  
+デバッグ実装とテスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
++= 演算子使うと、一文字ずつ配列に格納されるので、 append を使う  
+  
+配列を整形してクリップボードに入れる  
+  
+ついでに処理まいに関数化  
+  
+テスト  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+py get_card.py  
+```  
+OK  
+  
+デバッグ削除とコメント整理  
   
 以上  
