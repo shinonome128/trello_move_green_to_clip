@@ -5,6 +5,7 @@
 from trello import TrelloClient
 import configparser
 import codecs
+import pyperclip
 
 """
 主処理
@@ -36,6 +37,39 @@ def main():
         # クライアントを作成
         client = TrelloClient(API_Key, API_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
 
+        # 緑ラベルカードの配列を呼び出し
+        green_cards = get_green_cards(client, BOARD_NAME, TAG_NAME)
+
+        # クリップボードにコピー
+        copy_clipboard(green_cards)
+
+"""
+カードリストの整形・クリップボードへ格納
+"""
+def copy_clipboard(cards_list):
+
+        # 空の文字列を作成
+        line = ''
+
+        # カードを取り出してループ処理
+        for card in cards_list:
+
+            # カード名と改行を格納
+            line += card.name + '\n'
+
+        # クリップボードにコピー
+        pyperclip.copy(line)
+
+        return
+
+"""
+緑ラベルカードの配列を取得
+"""
+def get_green_cards(client, BOARD_NAME, TAG_NAME):
+
+        # 緑ラベルカードの空配列を作成
+        green_cards = []
+
         # ボードリスト取得
         board_list = client.list_boards()
 
@@ -57,8 +91,10 @@ def main():
                             # ラベル名が一致するものを処理
                             if card.labels[0].name == TAG_NAME:
 
-                                # カード名を出力
-                                print(card.name)
+                                # 緑ラベルのカードを配列に追加
+                                green_cards.append(card)
+
+        return green_cards
 
 """
 お作法、他ファイルから呼び出された場合は、このスクリプトは実行されない
