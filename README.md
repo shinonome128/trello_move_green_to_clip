@@ -57,6 +57,18 @@ https://stackoverflow.com/questions/1648517/configparser-with-unicode-items
 配列への追加方法、append の使い方  
 https://note.nkmk.me/python-list-append-extend-insert/  
   
+GCF 超入門  
+https://qiita.com/kai_kou/items/dca21cdfd8375a247c2f  
+  
+JX 通信の小笠原先生、ディプロイ先の一つとして Lambda を考える、ローカルツールをラップする設計、 CI までの考え方  
+https://employment.en-japan.com/engineerhub/entry/2018/07/03/110000  
+  
+GCF でアクセス認証する方法、バケットにトークンを準備して、トリガー HTTP に JSON 形式で付与して認証する方法  
+http://studio-andy.hatenablog.com/entry/cloud-functions-iam  
+  
+GCP 本家、 Cloud Functions での認証方法の実装  
+https://cloud.google.com/solutions/authentication-in-http-cloud-functions?hl=ja  
+  
 ## やること  
   
 レポジトリの作成  
@@ -1138,5 +1150,49 @@ copy C:\Users\shino\doc\autologin\otp.bat get_green.bat
 テスト  
 WOX から起動して緑ラベルカードがクリップボードに入ること  
 OK!  
+  
+## python の実行環境を GCP に移動する  
+  
+コードだけを登録してクラウド上で実行、結果を返す、ローカルのコンピュートリソースを使わない方法  
+  
+サーバレス実装方法調査  
+AWS Lambda の GCP バージョンを探す  
+  
+大まかなやり方  
+Google Cloud Functionsを使う  
+GCP コンソールから関数とトリガー HTTP を設定  
+gcloud ツールならディプロイまでやってくれる  
+トリガー となる URL にアクセスすると実行結果を受け取る  
+  
+GCF サンプル実行  
+```  
+gcf-demo プロジェクト作成  
+Cloud Functionsの[関数を作成]  
+[ランタイム]プルダウンメニューをみると[Python 3.7]が選べます！  
+今回はトリガーを[HTTP]でサンプルそのままで関数を作成してみます。  
+関数作成中。Stackdriver Loggingでログも確認できます。  
+CurlでGETしてみた。  
+```  
+  
+関数の削除  
+手動でCloud Functionsの[関数を削除]  
+  
+セキュリティどうするんだろ  
+アクセストークンで認証するらしい  
+```  
+Cloud Storage Bucketを作成し、承認を行うプロキシとして利用する  
+Bucketの作成  
+Access Tokenの取得  
+Cloud Functionsを拡張する  
+Access Tokenを付与してリクエスト  
+```  
+  
+FIrebase の認証機能を使う  
+うーん、めんどくさそう、別に Web アプリを作りたいわけではなく、安全にコード実行リソースをクラウドに移したいだけなので  
+  
+本番コードの移行  
+Git から持ってきたコードとかどうすればいいんだろう、zip のアップロードができそう、だめ  
+クリップボードに送れない場合はブラウザ出力で良い、これはできる  
+serverless framework を使ってみる  
   
 以上  
