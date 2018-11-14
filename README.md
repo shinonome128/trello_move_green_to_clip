@@ -1080,7 +1080,6 @@ sample_conf.txt に凡例を入れる
 vmlogin のコード部分からサンプル部分を抽出  
 ```  
 import pyperclip  
-# 取得した OTP をクリップボードにコピー  
 pyperclip.copy(get_otp(USER_SECRET_FILE, CLIENT_SECRET_FILE, SCOPES, PIN))  
 ```  
   
@@ -1125,5 +1124,19 @@ py get_card.py
 OK  
   
 デバッグ削除とコメント整理  
+  
+## wox から呼び出せるようにするためにバッチファイルの作成  
+  
+vmlogin から、バッチファイルを流用  
+```  
+cd C:\Users\shino\doc\trello_move_green_to_clip  
+copy C:\Users\shino\doc\autologin\otp.bat get_green.bat  
+```  
+  
+バッチファイルの中身を修正  
+  
+テスト  
+WOX から起動して緑ラベルカードがクリップボードに入ること  
+OK!  
   
 以上  
