@@ -1,5 +1,5 @@
   
-# memo.md
+# memo.md  
   
 ## 目的  
   
@@ -1203,25 +1203,25 @@ cd C:\Users\shino\doc\trello_move_green_to_clip
 copy README.md memo.md  
 git add *  
 git commit -m "Add memo.md"  
-git push
+git push  
 ```  
   
 メモの修正  
 タイトル部分ぐらい  
-
-不要ファイルの削除
-util.py とか
+  
+不要ファイルの削除  
+util.py とか  
 ```  
 cd C:\Users\shino\doc\trello_move_green_to_clip  
-del util.py
+del util.py  
 git add *  
-git commit -m "Delete util.py"
-git push
+git commit -m "Delete util.py"  
+git push  
 ```  
   
 リードミーの修正  
 使い方、必要な部分だけを記載してゆく  
-
+  
 ## イシュー作成  
   
 メモとリードミーの分割  
