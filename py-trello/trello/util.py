@@ -19,13 +19,10 @@ def create_oauth_token(expiration=None, scope=None, key=None, secret=None, name=
     authorize_url = 'https://trello.com/1/OAuthAuthorizeToken'
     access_token_url = 'https://trello.com/1/OAuthGetAccessToken'
 
-    # expiration = expiration or os.environ.get('TRELLO_EXPIRATION', "30days")
-    expiration = 'never'
+    expiration = expiration or os.environ.get('TRELLO_EXPIRATION', "30days")
     scope = scope or os.environ.get('TRELLO_SCOPE', 'read,write')
-    # trello_key = key or os.environ['TRELLO_API_KEY']
-    trello_key = '15798efd0f84d7a491bbc7c6303bcccb'
-    # trello_secret = secret or os.environ['TRELLO_API_SECRET']
-    trello_secret = '4017860a380c9f7a663f799eef583c151da66d2f47f6772044744eff855b1d03'
+    trello_key = key or os.environ['TRELLO_API_KEY']
+    trello_secret = secret or os.environ['TRELLO_API_SECRET']
     name = name or os.environ.get('TRELLO_NAME', 'py-trello')
 
     # Step 1: Get a request token. This is a temporary token that is used for
